@@ -341,7 +341,7 @@ class FevermapDataEntry extends LitElement {
 
     validateAge(birthYear) {
         // hard code this
-        birthYear = 1900;
+        this.birthYear = 1900;
         // if (birthYear > 2020 || birthYear < 1900) {
         //   this.errorMessage = Translator.get('system_messages.error.age_not_in_range');
         //   SnackBar.error(this.errorMessage);
@@ -352,7 +352,7 @@ class FevermapDataEntry extends LitElement {
 
     validateGender(gender) {
         // hard code this
-        gender = 'F';
+        this.gender = 'F';
         // if (gender === null) {
         //     this.errorMessage = Translator.get('system_messages.error.gender_not_set');
         //     SnackBar.error(this.errorMessage);

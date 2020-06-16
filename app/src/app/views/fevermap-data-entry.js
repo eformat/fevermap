@@ -307,7 +307,7 @@ class FevermapDataEntry extends LitElement {
         }
         //feverData.birth_year = this.birthYear;
         //feverData.gender = this.gender;
-        feverData.birth_year = 1900;
+        feverData.birth_year = '1900';
         feverData.gender = 'F';
 
         feverData.location_country_code = geoCodingInfo.country_code;

@@ -212,7 +212,7 @@ class SubmissionResource(Resource):
             last_submission = submitter.submissions[-1]
 
             earliest_next_submission_time = \
-                last_submission.timestamp_modified + datetime.timedelta(hours=1)
+                last_submission.timestamp_modified + datetime.timedelta(minutes=1)
 
             if earliest_next_submission_time > datetime.datetime.now():
                 app.logger.warning(

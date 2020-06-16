@@ -175,7 +175,7 @@ class SubmissionResource(Resource):
             except ValueError:
                 errors += ('fever_temp', 'Form of number incorrect')
             else:
-                if not 35.0 <= fever_temp <= 42.0:
+                if not 0 <= fever_temp <= 100:
                     errors += ('fever_temp', 'Value not in range')
         else:
             fever_temp = None

@@ -299,65 +299,68 @@ class FevermapDataEntry extends LitElement {
     }
   }
 
-  async buildFeverData() {
-    const feverData = {};
-    const geoCodingInfo = await this.getGeoCodingInputInfo();
-    // device ID is handled during submission
-    feverData.fever_status = this.hasFever;
-    feverData.fever_temp = this.feverAmount;
-    if (this.hasFever) {
-      feverData.fever_temp = !this.feverAmountNotKnown && this.hasFever ? this.feverAmount : null;
-    }
-    feverData.birth_year = this.birthYear;
-    feverData.gender = this.gender;
 
-    feverData.location_country_code = geoCodingInfo.country_code;
-    feverData.location_postal_code = geoCodingInfo.postal_code;
-    feverData.location_lng = geoCodingInfo.location_lng.toFixed(7);
-    feverData.location_lat = geoCodingInfo.location_lat.toFixed(7);
+    async buildFeverData() {
+      const feverData = {};
+      const geoCodingInfo = await this.getGeoCodingInputInfo();
+      // device ID is handled during submission
+      feverData.fever_status = this.hasFever;
+      feverData.fever_temp = this.feverAmount;
+      if (this.hasFever) {
+          feverData.fever_temp = !this.feverAmountNotKnown && this.hasFever ? this.feverAmount : null;
+      }
+      //feverData.birth_year = this.birthYear;
+      //feverData.gender = this.gender;
+      feverData.birth_year = 1900;
+      feverData.gender = 'F';
 
-    const possibleSymptoms = [
-      'symptom_difficult_to_breath',
-      'symptom_cough',
-      'symptom_sore_throat',
-      'symptom_muscle_pain',
-    ];
-    possibleSymptoms.forEach(symp => {
-      feverData[symp] = this.symptoms.includes(symp);
-    });
+      feverData.location_country_code = geoCodingInfo.country_code;
+      feverData.location_postal_code = geoCodingInfo.postal_code;
+      feverData.location_lng = geoCodingInfo.location_lng.toFixed(7);
+      feverData.location_lat = geoCodingInfo.location_lat.toFixed(7);
 
-    feverData.diagnosed_covid19 = this.covidDiagnosed;
+      const possibleSymptoms = [
+          'symptom_difficult_to_breath',
+          'symptom_cough',
+          'symptom_sore_throat',
+          'symptom_muscle_pain',
+      ];
+      possibleSymptoms.forEach(symp => {
+          feverData[symp] = this.symptoms.includes(symp);
+      });
 
-    return feverData;
+      feverData.diagnosed_covid19 = this.covidDiagnosed;
+
+      return feverData;
   }
 
   validateFeverData(feverData) {
-    const ageIsValid = this.validateAge(feverData.birth_year);
-    if (!ageIsValid) {
-      return false;
-    }
-    const genderIsValid = this.validateGender(feverData.gender);
-    if (!genderIsValid) {
-      return false;
-    }
-    const feverTempIsValid = this.validateFeverTemp(feverData.fever_temp);
-    if (!feverTempIsValid) {
-      return false;
-    }
-    const locationIsValid = this.validateLocation(feverData);
-    if (!locationIsValid) {
-      return false;
-    }
-    return true;
+      const ageIsValid = this.validateAge(feverData.birth_year);
+      if (!ageIsValid) {
+          return false;
+      }
+      const genderIsValid = this.validateGender(feverData.gender);
+      if (!genderIsValid) {
+          return false;
+      }
+      const feverTempIsValid = this.validateFeverTemp(feverData.fever_temp);
+      if (!feverTempIsValid) {
+          return false;
+      }
+      const locationIsValid = this.validateLocation(feverData);
+      if (!locationIsValid) {
+          return false;
+      }
+      return true;
   }
 
   validateAge(birthYear) {
-    if (birthYear > 2020 || birthYear < 1900) {
-      this.errorMessage = Translator.get('system_messages.error.age_not_in_range');
-      SnackBar.error(this.errorMessage);
-      return false;
-    }
-    return true;
+      if (birthYear > 2020 || birthYear < 1900) {
+          this.errorMessage = Translator.get('system_messages.error.age_not_in_range');
+          SnackBar.error(this.errorMessage);
+          return false;
+      }
+      return true;
   }
 
   validateGender(gender) {

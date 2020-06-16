@@ -124,21 +124,22 @@ pipeline {
                     }
                 }
             }
-            // triggered by app build above
-            stage("Build Runtime App") {
-                agent {
-                    node {
-                        label "master"
-                    }
+        }
+
+        // triggered by app build above
+        stage("Build Runtime App") {
+            agent {
+                node {
+                    label "master"
                 }
-                steps {
-                    echo '### Waiting for runtime app build to complete ###'
-                    script {
-                        openshift.withCluster() {
-                            openshift.withProject("${TARGET_NAMESPACE}") {
-                                openshift.selector("bc", "${NAME}-runtime").untilEach(1) {
-                                    return it.object().status.phase == "Complete"
-                                }
+            }
+            steps {
+                echo '### Waiting for runtime app build to complete ###'
+                script {
+                    openshift.withCluster() {
+                        openshift.withProject("${TARGET_NAMESPACE}") {
+                            openshift.selector("bc", "${NAME}-runtime").untilEach(1) {
+                                return it.object().status.phase == "Complete"
                             }
                         }
                     }

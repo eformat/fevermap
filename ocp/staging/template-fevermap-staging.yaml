@@ -80,7 +80,7 @@ parameters:
     displayName: Git Repository URL
     name: SOURCE_REPOSITORY_URL
     required: true
-    value: https://gitlab.com/fevermap/fevermap.git
+    value: https://github.com/eformat/fevermap.git
   - description:
       Set this to a branch name, tag or other ref of your repository if you
       are not using the default branch.
@@ -554,9 +554,9 @@ objects:
       # path: /api
       port:
         targetPort: 9000-tcp
-        tls:
-         insecureEdgeTerminationPolicy: Allow
-         termination: edge
+      tls:
+       insecureEdgeTerminationPolicy: Allow
+       termination: edge
       to:
         kind: Service
         name: ${NAME}-api
@@ -893,9 +893,9 @@ objects:
       host: ${APPLICATION_APP_DOMAIN}
       port:
         targetPort: 8080-tcp
-        tls:
-         insecureEdgeTerminationPolicy: Allow
-         termination: edge
+      tls:
+        insecureEdgeTerminationPolicy: Allow
+        termination: edge
       to:
         kind: Service
         name: ${NAME}-app

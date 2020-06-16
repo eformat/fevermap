@@ -53,8 +53,8 @@ class FevermapDataEntry extends LitElement {
         super();
         const latestEntry = JSON.parse(localStorage.getItem('LATEST_ENTRY'));
         const lastLocation = localStorage.getItem('LAST_LOCATION');
-        const gender = localStorage.getItem('GENDER');
-        const birthYear = localStorage.getItem('BIRTH_YEAR');
+        const gender = "M"; //localStorage.getItem('GENDER');
+        const birthYear = 1971; //localStorage.getItem('BIRTH_YEAR');
         const covidDiagnosed = localStorage.getItem('COVID_DIAGNOSIS');
 
         this.errorMessage = null;
@@ -72,7 +72,7 @@ class FevermapDataEntry extends LitElement {
 
         this.crowdingLevel = "Not Crowded";
 
-        this.firstTimeSubmitting = this.gender == "M" || this.birthYear == 1971;
+        this.firstTimeSubmitting = this.gender == null|| this.birthYear == null;
 
         this.createCountrySelectOptions();
         this.queuedEntries = [];

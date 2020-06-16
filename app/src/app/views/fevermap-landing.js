@@ -36,7 +36,7 @@ class FevermapLanding extends LitElement {
     return html`
       <div class="container view-wrapper">
         <div class="fevermap-landing-content">
-          <a href="https://fevermap.net"><img src="${logoImg}" /></a>
+          <a href="https://crowdtracker.net"><img src="${logoImg}" height='97px' width='250px' /></a>
           ${PWAService.installable()
             ? html`
                 <material-button
@@ -48,7 +48,7 @@ class FevermapLanding extends LitElement {
                   }}"
                 ></material-button>
               `
-            : ''}
+            : ''} 
           <div class="about mb-4">
             <h2>${Translator.get('landing.about_title')}</h2>
             <p>
@@ -59,34 +59,7 @@ class FevermapLanding extends LitElement {
             <p>
               ${Translator.get('landing.about_current_methods')}
             </p>
-            <p>${Translator.get('landing.about_solution')}</p>
-            <p>
-              ${Translator.get('landing.about_data_collection')}
-            </p>
-            ${this.currentParticipantCount > 2000
-              ? html`
-                  <p class="participant-count-subtitle">
-                    ${Translator.get('landing.about_current_participant_count', {
-                      participantCount: this.currentParticipantCount,
-                    })}
-                  </p>
-                `
-              : ''}
           </div>
-          <div class="participation mb-4">
-            <h2>${Translator.get('landing.how_to_participate')}</h2>
-            <p>
-              ${Translator.get('landing.participation_info')}
-            </p>
-            <p>
-              ${Translator.get('landing.info_disclaimer')}
-            </p>
-          </div>
-          <div class="data-use">
-            <h2>${Translator.get('landing.how_will_my_data_be_used')}</h2>
-            <p>${Translator.get('landing.data_use_explanation')}</p>
-          </div>
-          <a href="https://fevermap.net">>> Fevermap.net</a>
         </div>
       </div>
     `;

@@ -1,7 +1,7 @@
 {
   "lang_name": "English",
   "language": "Language",
-  "fevermap_title": "Fevermap",
+  "fevermap_title": "CrowdTracker",
   "back": "Back",
   "today": "Today",
   "user_description": "You are a %{age} -year-old %{gender}, with %{diagnosis} diagnosis",
@@ -10,9 +10,9 @@
 
   "landing": {
     "about": "About",
-    "about_title": "What is Fevermap?",
-    "about_content_explanation": " is a web and mobile application created for simple and real-time data collection of the prevalence of the Coronavirus COVID-19 pandemic.",
-    "about_current_methods": "Current methods of tracking the prevalence of the Corona virus do not yield a complete picture. Large masses remain untested to keep time and resources available for those in need.",
+    "about_title": "What is CrowdTracker?",
+    "about_content_explanation": " is a web and mobile application created to provide public transport crowdedness data using the wisdom of the crowd.",
+    "about_current_methods": "CrowdTracker is created as a response to COVID-19 pandemic.",
     "about_solution": "Fevermap is the solution for this problem. With Fevermap, ordinary people around the world can anonymously self-report their fever and other symptoms. This means that we can estimate the true prevalence of COVID-19 infections in real-time and provide authorities with data that helps them make data-based, correct and timely decisions about protective measures.",
     "about_data_collection": "The data collected by Fevermap is anonymized and will be used to help with raising awareness of the current global situation.",
     "about_current_participant_count": "To this day, %{participantCount} users have used Fevermap to report their symptoms. ",

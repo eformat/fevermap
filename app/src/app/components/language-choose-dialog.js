@@ -80,7 +80,7 @@ class LanguageChooseDialog extends LitElement {
                 `
               : ''}
           </div>
-          <p>
+          <!-- <p>
             We highlighted the language our system recommends for you above. If this isn’t the
             language you would like to use, choose from all available languages below.
           </p>
@@ -95,7 +95,7 @@ class LanguageChooseDialog extends LitElement {
                   ></language-choose-dialog-button>
                 `,
             )}
-          </div>
+          </div> --> 
         </div>
       </div>
     `;

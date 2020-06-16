@@ -632,7 +632,7 @@ class FevermapDataEntry extends LitElement {
       <div class="container view-wrapper fevermap-entry-dialog fevermap-entry-dialog--hidden">
         <div class="fevermap-data-entry-content">
           <div
-            class="fevermap-entry-carousel${this.questionCount === 4
+            class="fevermap-entry-carousel${this.questionCount === 1
               ? ' fevermap-entry-carousel--full-width'
               : ' fevermap-entry-carousel--smaller-width'}"
           >
@@ -648,26 +648,27 @@ class FevermapDataEntry extends LitElement {
       <div class="entry-dialog-close-button">
         <material-icon @click="${this.closeView}" icon="close"></material-icon>
       </div>
-      <div class="fevermap-entry-window mdc-elevation--z9" id="question-1" tabindex="0">
+<!--      <div class="fevermap-entry-window mdc-elevation--z9" id="question-1" tabindex="0">
         ${this.getPersonalQuestions()}
-      </div>
+      </div> -->
       <div
         class="fevermap-entry-window mdc-elevation--z9 fevermap-fever-questions"
-        id="question-2"
+        id="question-1"
         tabindex="0"
       >
         ${this.getFeverMeter()}
       </div>
+      <!--
       <div
         class="fevermap-entry-window mdc-elevation--z9 fevermap-other-symptoms-questions"
         id="question-3"
         tabindex="0"
       >
         ${this.getSymptomsFields()}
-      </div>
+      </div> -->
       <div
         class="fevermap-entry-window mdc-elevation--z9 fevermap-location-questions"
-        id="question-4"
+        id="question-2"
         tabindex="0"
       >
         ${this.getGeoLocationInput()}
@@ -706,7 +707,7 @@ class FevermapDataEntry extends LitElement {
         <material-icon icon="keyboard_arrow_left"></material-icon>${Translator.get('back')}
       </div>
       <div class="question-number-holder">
-        2/${this.questionCount}
+        1/${this.questionCount}
       </div>
       <div class="title-holder">
         <h2>${Translator.get('entry.new_entry')}</h2>
@@ -886,12 +887,12 @@ class FevermapDataEntry extends LitElement {
     return html`
       <div
         class="back-button"
-        @click="${() => this.previousQuestion(() => this.handleDialogFocus('#question-3'))}"
+        @click="${() => this.previousQuestion(() => this.handleDialogFocus('#question-2'))}"
       >
         <material-icon icon="keyboard_arrow_left"></material-icon>${Translator.get('back')}
       </div>
       <div class="question-number-holder">
-        4/${this.questionCount}
+        2/${this.questionCount}
       </div>
       <div class="title-holder">
         <h2>${Translator.get('entry.new_entry')}</h2>

@@ -86,59 +86,59 @@ pipeline {
                 }
             }
         }
-    }
 
-    stage("Build (Compile App)") {
-        parallel {
-            stage("Build Api") {
+        stage("Build (Compile App)") {
+            parallel {
+                stage("Build Api") {
+                    agent {
+                        node {
+                            label "master"
+                        }
+                    }
+                    steps {
+                        echo '### Running api build ###'
+                        script {
+                            openshift.withCluster() {
+                                openshift.withProject("${TARGET_NAMESPACE}") {
+                                    openshift.selector("bc", "${NAME}-api").startBuild("--wait=true")
+                                }
+                            }
+                    }
+                    }
+                }
+                stage("Build App") {
+                    agent {
+                        node {
+                            label "master"
+                        }
+                    }
+                    steps {
+                        echo '### Running app build ###'
+                        script {
+                            openshift.withCluster() {
+                                openshift.withProject("${TARGET_NAMESPACE}") {
+                                    openshift.selector("bc", "${NAME}-build").startBuild("--wait=true")
+                                }
+                            }
+                    }
+                    }
+                }
+            }
+            // triggered by app build above
+            stage("Build Runtime App") {
                 agent {
                     node {
                         label "master"
                     }
                 }
                 steps {
-                    echo '### Running api build ###'
+                    echo '### Waiting for runtime app build to complete ###'
                     script {
                         openshift.withCluster() {
                             openshift.withProject("${TARGET_NAMESPACE}") {
-                                openshift.selector("bc", "${NAME}-api").startBuild("--wait=true")
-                            }
-                        }
-                   }
-                }
-            }
-            stage("Build App") {
-                agent {
-                    node {
-                        label "master"
-                    }
-                }
-                steps {
-                    echo '### Running app build ###'
-                    script {
-                        openshift.withCluster() {
-                            openshift.withProject("${TARGET_NAMESPACE}") {
-                                openshift.selector("bc", "${NAME}-build").startBuild("--wait=true")
-                            }
-                        }
-                   }
-                }
-            }
-        }
-        // triggered by app build above
-        stage("Build Runtime App") {
-            agent {
-                node {
-                    label "master"
-                }
-            }
-            steps {
-                echo '### Waiting for runtime app build to complete ###'
-                script {
-                    openshift.withCluster() {
-                        openshift.withProject("${TARGET_NAMESPACE}") {
-                            openshift.selector("bc", "${NAME}-runtime").untilEach(1) {
-                                return it.object().status.phase == "Complete"
+                                openshift.selector("bc", "${NAME}-runtime").untilEach(1) {
+                                    return it.object().status.phase == "Complete"
+                                }
                             }
                         }
                     }

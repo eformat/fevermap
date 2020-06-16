@@ -107,12 +107,12 @@ parameters:
     displayName: Google analytics property ID
     name: GOOGLE_ANALYTICS_CODE
   - description:
-      GitLab trigger secret.  A difficult to guess string encoded as part
+      GitHub trigger secret.  A difficult to guess string encoded as part
       of the webhook URL.  Not encrypted.
-    displayName: GitLab Webhook Secret
+    displayName: GitHub Webhook Secret
     from: "[a-zA-Z0-9]{40}"
     generate: expression
-    name: GITLAB_WEBHOOK_SECRET
+    name: GITHUB_WEBHOOK_SECRET
   - displayName: Database Service Name
     name: DATABASE_SERVICE_NAME
     required: true
@@ -375,9 +375,9 @@ objects:
           ref: ${SOURCE_REPOSITORY_REF}
         contextDir: /api
       triggers:
-        - gitlab:
-            secret: ${GITLAB_WEBHOOK_SECRET}
-          type: GitLab
+        - github:
+            secret: ${GITHUB_WEBHOOK_SECRET}
+          type: GitHub
         - type: ImageChange
           imageChange:
         - type: ConfigChange
@@ -661,9 +661,9 @@ objects:
         type: Source
       successfulBuildsHistoryLimit: 5
       triggers:
-        - gitlab:
-            secret: ${GITLAB_WEBHOOK_SECRET}
-          type: GitLab
+        - github:
+            secret: ${GITHUB_WEBHOOK_SECRET}
+          type: GitHub
         - type: ConfigChange
         - imageChange:
           type: ImageChange

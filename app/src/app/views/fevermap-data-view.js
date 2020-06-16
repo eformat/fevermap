@@ -15,285 +15,285 @@ import NotificationService from '../services/notification-service.js';
 import BirthYearRangeSelector from '../components/birth-year-range-selector.js';
 
 class FevermapDataView extends LitElement {
-  static get properties() {
-    return {
-      lastSubmissionTime: { type: String },
-      submissionCount: { type: Number },
-      submissionStreak: { type: Number },
-      previousSubmissions: { type: Array },
-      geoCodingInfo: { type: Object },
-      firstTimeSubmitting: { type: Boolean },
-      lastSubmissionIsTooCloseToNow: { type: Boolean },
-      nextAllowedSubmitTime: { type: String },
+    static get properties() {
+        return {
+            lastSubmissionTime: { type: String },
+            submissionCount: { type: Number },
+            submissionStreak: { type: Number },
+            previousSubmissions: { type: Array },
+            geoCodingInfo: { type: Object },
+            firstTimeSubmitting: { type: Boolean },
+            lastSubmissionIsTooCloseToNow: { type: Boolean },
+            nextAllowedSubmitTime: { type: String },
 
-      setGender: { type: String },
-      setBirthYear: { type: String },
-      setCovidDiagnosis: { type: Boolean },
-      showEditFields: { type: Boolean },
+            setGender: { type: String },
+            setBirthYear: { type: String },
+            setCovidDiagnosis: { type: Boolean },
+            showEditFields: { type: Boolean },
 
-      queuedEntries: { type: Array },
-      hasSubscribedToTopic: { type: Boolean },
-    };
-  }
-
-  constructor() {
-    super();
-
-    const submissionCount = localStorage.getItem('SUBMISSION_COUNT');
-    const submissionStreak = localStorage.getItem('SUBMISSION_STREAK');
-    this.submissionCount = submissionCount || 0;
-    this.submissionStreak = submissionStreak || 0;
-    dayjs.extend(utc);
-
-    this.checkLastSubmissionTime();
-
-    const gender = localStorage.getItem('GENDER');
-    let birthYear = localStorage.getItem('BIRTH_YEAR');
-    birthYear = this.handleOldBirthYear(birthYear);
-    const covidDiagnosis = localStorage.getItem('COVID_DIAGNOSIS');
-    this.setGender = gender || null;
-    this.setBirthYear = birthYear || '';
-    this.setCovidDiagnosis = covidDiagnosis === 'true';
-    this.previousSubmissions = null;
-    this.showEditFields = false;
-
-    this.firstTimeSubmitting = this.setGender == null || this.setBirthYear == null;
-
-    this.getPreviousSubmissionsFromIndexedDb();
-    this.hasSubscribedToTopic = localStorage.getItem('NOTIFICATION_TOPIC');
-  }
-
-  /**
-   * Since we've changed from exact year to year range, some users have the old format.
-   * This wil re-format the user's age to match the new system.
-   * @param birthYear
-   */
-  handleOldBirthYear(birthYear) {
-    if (birthYear % 10 !== 0) {
-      this.handleAgeChange(Math.floor(birthYear / 10) * 10);
-      return this.setBirthYear;
+            queuedEntries: { type: Array },
+            hasSubscribedToTopic: { type: Boolean },
+        };
     }
-    return birthYear;
-  }
 
-  firstUpdated() {
-    this.getGeoLocationInfo();
-    document.addEventListener('update-submission-list', () => {
-      this.getPreviousSubmissionsFromIndexedDb();
+    constructor() {
+        super();
 
-      this.setGender = localStorage.getItem('GENDER');
-      this.setBirthYear = localStorage.getItem('BIRTH_YEAR');
-      this.setCovidDiagnosis = localStorage.getItem('COVID_DIAGNOSIS') === 'true';
+        const submissionCount = localStorage.getItem('SUBMISSION_COUNT');
+        const submissionStreak = localStorage.getItem('SUBMISSION_STREAK');
+        this.submissionCount = submissionCount || 0;
+        this.submissionStreak = submissionStreak || 0;
+        dayjs.extend(utc);
 
-      this.checkLastSubmissionTime();
-    });
+        this.checkLastSubmissionTime();
 
-    document.addEventListener('update-queued-count', () => {
-      this.getQueuedEntriesFromIndexedDb();
-    });
-    document.addEventListener('update-notification-subscription-status', () => {
-      this.hasSubscribedToTopic = localStorage.getItem('NOTIFICATION_TOPIC');
-    });
+        const gender = localStorage.getItem('GENDER');
+        let birthYear = localStorage.getItem('BIRTH_YEAR');
+        birthYear = this.handleOldBirthYear(birthYear);
+        const covidDiagnosis = localStorage.getItem('COVID_DIAGNOSIS');
+        this.setGender = gender || null;
+        this.setBirthYear = birthYear || '';
+        this.setCovidDiagnosis = covidDiagnosis === 'true';
+        this.previousSubmissions = null;
+        this.showEditFields = false;
 
-    if (this.firstTimeSubmitting || this.isFromNotification()) {
-      this.showEntryDialog();
-      window.history.pushState({}, '', `/`);
+        this.firstTimeSubmitting = this.setGender == null || this.setBirthYear == null;
+
+        this.getPreviousSubmissionsFromIndexedDb();
+        this.hasSubscribedToTopic = localStorage.getItem('NOTIFICATION_TOPIC');
     }
-    this.getQueuedEntriesFromIndexedDb();
-    GoogleAnalyticsService.reportNavigationAction('Your Data View');
-    this.getSubmissionStats();
 
-    document.addEventListener('submission-stats-update', () => {
-      this.getSubmissionStats();
-    });
-
-    // Update the feed on focus to get the latest info after background submit etc
-    window.addEventListener('focus', () => {
-      this.getSubmissionStats();
-      document.dispatchEvent(new CustomEvent('update-submission-list'));
-    });
-  }
-
-  /**
-   * Set asynchronously load language pack from dayjs locales and
-   * set it for weekday translations in stats
-   * @returns {Promise<void>}
-   */
-  async setDayJsLanguage() {
-    const langKey = Translator.getLang().key || 'en';
-    if (langKey === 'en') {
-      // Dayjs defaults to english
-      return;
-    }
-    try {
-      await import(`dayjs/locale/${langKey}.js`);
-      dayjs.locale(langKey);
-    } catch (err) {
-      dayjs.locale('en');
-    }
-  }
-
-  async getSubmissionStats() {
-    const db = await DBUtil.getInstance();
-    const submissionHistory = await db.getAll(FEVER_ENTRIES);
-    const submissionCount = submissionHistory.length;
-    const submissionStreak = DataEntryService.determineStreak(submissionHistory);
-
-    localStorage.setItem('SUBMISSION_COUNT', submissionCount);
-    localStorage.setItem('SUBMISSION_STREAK', submissionStreak);
-
-    this.submissionCount = submissionCount || 0;
-    this.submissionStreak = submissionStreak || 0;
-  }
-
-  checkLastSubmissionTime() {
-    const lastEntryTime = localStorage.getItem('LAST_ENTRY_SUBMISSION_TIME');
-    if (lastEntryTime && lastEntryTime !== 'undefined') {
-      this.lastSubmissionTime = dayjs(Number(lastEntryTime)).format('DD-MM-YYYY : HH:mm');
-      this.lastSubmissionIsTooCloseToNow = dayjs(Number(lastEntryTime))
-        .local()
-        .add(1, 'hour')
-        .isAfter(dayjs(Date.now()));
-      this.nextAllowedSubmitTime = dayjs(Number(lastEntryTime))
-        .add(1, 'hour')
-        .local()
-        .format('DD-MM-YYYY : HH:mm');
-    }
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  isFromNotification() {
-    return /fromNotification=true/.test(window.location.search.substring(1));
-  }
-
-  async getGeoLocationInfo(forceUpdate) {
-    if (!this.geoCodingInfo || forceUpdate) {
-      navigator.geolocation.getCurrentPosition(async success => {
-        this.geoCodingInfo = await GeolocatorService.getGeoCodingInfo(
-          success.coords.latitude,
-          success.coords.longitude,
-        );
-        delete this.geoCodingInfo.success;
-      });
-    }
-  }
-
-  async getPreviousSubmissionsFromIndexedDb() {
-    await this.setDayJsLanguage();
-    const db = await DBUtil.getInstance();
-    const previousSubmissions = await db.getAll(FEVER_ENTRIES);
-    if (previousSubmissions && previousSubmissions.length > 0) {
-      this.previousSubmissions = previousSubmissions.sort(
-        (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
-      );
-    } else {
-      this.previousSubmissions = [];
-    }
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  showEntryDialog() {
-    const dataEntryDialog = document.createElement('fevermap-data-entry');
-    document.querySelector('fevermap-root').appendChild(dataEntryDialog);
-    setTimeout(() => {
-      dataEntryDialog
-        .querySelector('.view-wrapper')
-        .classList.remove('fevermap-entry-dialog--hidden');
-    });
-  }
-
-  // For use when we enable offline
-  async getQueuedEntriesFromIndexedDb() {
-    const db = await DBUtil.getInstance();
-    const queuedSubmissions = await db.getAll(QUEUED_ENTRIES);
-    if (queuedSubmissions && queuedSubmissions.length > 0) {
-      this.queuedEntries = queuedSubmissions;
-    } else {
-      this.queuedEntries = null;
-    }
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  getSymptomsForSubmission(sub) {
-    const symptoms = [
-      {
-        translation: Translator.get('entry.questions.difficulty_to_breathe'),
-        hasSymptom: sub.symptom_difficult_to_breath,
-      },
-      {
-        translation: Translator.get('entry.questions.cough'),
-        hasSymptom: sub.symptom_cough,
-      },
-      {
-        translation: Translator.get('entry.questions.sore_throat'),
-        hasSymptom: sub.symptom_sore_throat,
-      },
-      {
-        translation: Translator.get('entry.questions.muscular_pain'),
-        hasSymptom: sub.symptom_muscle_pain,
-      },
-    ];
-    return symptoms.filter(symp => symp.hasSymptom);
-  }
-
-  handleGenderChange(newGender) {
-    this.setGender = newGender;
-    localStorage.setItem('GENDER', newGender);
-  }
-
-  getAge() {
-    const age = dayjs(new Date()).year() - this.setBirthYear;
-    return `${age - 10}-${age}`;
-  }
-
-  handleAgeChange(newAge) {
-    if (newAge < 1900 || newAge > 2020) {
-      return;
-    }
-    this.setBirthYear = newAge;
-    localStorage.setItem('BIRTH_YEAR', newAge);
-  }
-
-  handleCovidDiagnosisChange() {
-    this.setCovidDiagnosis = this.querySelector('#covid-diagnosed').checked;
-    localStorage.setItem('COVID_DIAGNOSIS', this.setCovidDiagnosis);
-  }
-
-  async syncQueuedEntries() {
-    const db = await DBUtil.getInstance();
-    let successfulSyncCount = 0;
-    await this.queuedEntries.map(async (entry, i) => {
-      const { id } = entry;
-      // delete entry.id;
-      const submissionResponse = await DataEntryService.handleDataEntrySubmission(entry, false);
-      if (submissionResponse.success) {
-        db.delete(QUEUED_ENTRIES, id);
-        DataEntryService.setEntriesToIndexedDb(submissionResponse);
-        successfulSyncCount += 1;
-      } else {
-        SnackBar.success(Translator.get('system_messages.success.entry_send_failed_queued'));
-      }
-      if (i === this.queuedEntries.length - 1) {
-        if (successfulSyncCount > 0) {
-          this.getQueuedEntriesFromIndexedDb();
-          this.getPreviousSubmissionsFromIndexedDb();
-          SnackBar.success(Translator.get('system_messages.success.sync_finished'));
+    /**
+     * Since we've changed from exact year to year range, some users have the old format.
+     * This wil re-format the user's age to match the new system.
+     * @param birthYear
+     */
+    handleOldBirthYear(birthYear) {
+        if (birthYear % 10 !== 0) {
+            this.handleAgeChange(Math.floor(birthYear / 10) * 10);
+            return this.setBirthYear;
         }
-      }
-    });
-  }
+        return birthYear;
+    }
 
-  // eslint-disable-next-line class-methods-use-this
-  showSubmissionTooCloseSnackbar() {
-    SnackBar.success(
-      Translator.get('system_messages.error.do_not_submit_new_temp_until', {
-        dateTime: this.nextAllowedSubmitTime,
-      }),
-    );
-  }
+    firstUpdated() {
+        this.getGeoLocationInfo();
+        document.addEventListener('update-submission-list', () => {
+            this.getPreviousSubmissionsFromIndexedDb();
 
-  render() {
-    return html`
+            this.setGender = localStorage.getItem('GENDER');
+            this.setBirthYear = localStorage.getItem('BIRTH_YEAR');
+            this.setCovidDiagnosis = localStorage.getItem('COVID_DIAGNOSIS') === 'true';
+
+            this.checkLastSubmissionTime();
+        });
+
+        document.addEventListener('update-queued-count', () => {
+            this.getQueuedEntriesFromIndexedDb();
+        });
+        document.addEventListener('update-notification-subscription-status', () => {
+            this.hasSubscribedToTopic = localStorage.getItem('NOTIFICATION_TOPIC');
+        });
+
+        if (this.firstTimeSubmitting || this.isFromNotification()) {
+            this.showEntryDialog();
+            window.history.pushState({}, '', `/`);
+        }
+        this.getQueuedEntriesFromIndexedDb();
+        GoogleAnalyticsService.reportNavigationAction('Your Data View');
+        this.getSubmissionStats();
+
+        document.addEventListener('submission-stats-update', () => {
+            this.getSubmissionStats();
+        });
+
+        // Update the feed on focus to get the latest info after background submit etc
+        window.addEventListener('focus', () => {
+            this.getSubmissionStats();
+            document.dispatchEvent(new CustomEvent('update-submission-list'));
+        });
+    }
+
+    /**
+     * Set asynchronously load language pack from dayjs locales and
+     * set it for weekday translations in stats
+     * @returns {Promise<void>}
+     */
+    async setDayJsLanguage() {
+        const langKey = Translator.getLang().key || 'en';
+        if (langKey === 'en') {
+            // Dayjs defaults to english
+            return;
+        }
+        try {
+            await
+            import (`dayjs/locale/${langKey}.js`);
+            dayjs.locale(langKey);
+        } catch (err) {
+            dayjs.locale('en');
+        }
+    }
+
+    async getSubmissionStats() {
+        const db = await DBUtil.getInstance();
+        const submissionHistory = await db.getAll(FEVER_ENTRIES);
+        const submissionCount = submissionHistory.length;
+        const submissionStreak = DataEntryService.determineStreak(submissionHistory);
+
+        localStorage.setItem('SUBMISSION_COUNT', submissionCount);
+        localStorage.setItem('SUBMISSION_STREAK', submissionStreak);
+
+        this.submissionCount = submissionCount || 0;
+        this.submissionStreak = submissionStreak || 0;
+    }
+
+    checkLastSubmissionTime() {
+        const lastEntryTime = localStorage.getItem('LAST_ENTRY_SUBMISSION_TIME');
+        if (lastEntryTime && lastEntryTime !== 'undefined') {
+            this.lastSubmissionTime = dayjs(Number(lastEntryTime)).format('DD-MM-YYYY : HH:mm');
+            this.lastSubmissionIsTooCloseToNow = dayjs(Number(lastEntryTime))
+                .local()
+                .add(1, 'hour')
+                .isAfter(dayjs(Date.now()));
+            this.nextAllowedSubmitTime = dayjs(Number(lastEntryTime))
+                .add(1, 'minute')
+                .local()
+                .format('DD-MM-YYYY : HH:mm');
+        }
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    isFromNotification() {
+        return /fromNotification=true/.test(window.location.search.substring(1));
+    }
+
+    async getGeoLocationInfo(forceUpdate) {
+        if (!this.geoCodingInfo || forceUpdate) {
+            navigator.geolocation.getCurrentPosition(async success => {
+                this.geoCodingInfo = await GeolocatorService.getGeoCodingInfo(
+                    success.coords.latitude,
+                    success.coords.longitude,
+                );
+                delete this.geoCodingInfo.success;
+            });
+        }
+    }
+
+    async getPreviousSubmissionsFromIndexedDb() {
+        await this.setDayJsLanguage();
+        const db = await DBUtil.getInstance();
+        const previousSubmissions = await db.getAll(FEVER_ENTRIES);
+        if (previousSubmissions && previousSubmissions.length > 0) {
+            this.previousSubmissions = previousSubmissions.sort(
+                (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
+            );
+        } else {
+            this.previousSubmissions = [];
+        }
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    showEntryDialog() {
+        const dataEntryDialog = document.createElement('fevermap-data-entry');
+        document.querySelector('fevermap-root').appendChild(dataEntryDialog);
+        setTimeout(() => {
+            dataEntryDialog
+                .querySelector('.view-wrapper')
+                .classList.remove('fevermap-entry-dialog--hidden');
+        });
+    }
+
+    // For use when we enable offline
+    async getQueuedEntriesFromIndexedDb() {
+        const db = await DBUtil.getInstance();
+        const queuedSubmissions = await db.getAll(QUEUED_ENTRIES);
+        if (queuedSubmissions && queuedSubmissions.length > 0) {
+            this.queuedEntries = queuedSubmissions;
+        } else {
+            this.queuedEntries = null;
+        }
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    getSymptomsForSubmission(sub) {
+        const symptoms = [{
+                translation: Translator.get('entry.questions.difficulty_to_breathe'),
+                hasSymptom: sub.symptom_difficult_to_breath,
+            },
+            {
+                translation: Translator.get('entry.questions.cough'),
+                hasSymptom: sub.symptom_cough,
+            },
+            {
+                translation: Translator.get('entry.questions.sore_throat'),
+                hasSymptom: sub.symptom_sore_throat,
+            },
+            {
+                translation: Translator.get('entry.questions.muscular_pain'),
+                hasSymptom: sub.symptom_muscle_pain,
+            },
+        ];
+        return symptoms.filter(symp => symp.hasSymptom);
+    }
+
+    handleGenderChange(newGender) {
+        this.setGender = newGender;
+        localStorage.setItem('GENDER', newGender);
+    }
+
+    getAge() {
+        const age = dayjs(new Date()).year() - this.setBirthYear;
+        return `${age - 10}-${age}`;
+    }
+
+    handleAgeChange(newAge) {
+        if (newAge < 1900 || newAge > 2020) {
+            return;
+        }
+        this.setBirthYear = newAge;
+        localStorage.setItem('BIRTH_YEAR', newAge);
+    }
+
+    handleCovidDiagnosisChange() {
+        this.setCovidDiagnosis = this.querySelector('#covid-diagnosed').checked;
+        localStorage.setItem('COVID_DIAGNOSIS', this.setCovidDiagnosis);
+    }
+
+    async syncQueuedEntries() {
+        const db = await DBUtil.getInstance();
+        let successfulSyncCount = 0;
+        await this.queuedEntries.map(async(entry, i) => {
+            const { id } = entry;
+            // delete entry.id;
+            const submissionResponse = await DataEntryService.handleDataEntrySubmission(entry, false);
+            if (submissionResponse.success) {
+                db.delete(QUEUED_ENTRIES, id);
+                DataEntryService.setEntriesToIndexedDb(submissionResponse);
+                successfulSyncCount += 1;
+            } else {
+                SnackBar.success(Translator.get('system_messages.success.entry_send_failed_queued'));
+            }
+            if (i === this.queuedEntries.length - 1) {
+                if (successfulSyncCount > 0) {
+                    this.getQueuedEntriesFromIndexedDb();
+                    this.getPreviousSubmissionsFromIndexedDb();
+                    SnackBar.success(Translator.get('system_messages.success.sync_finished'));
+                }
+            }
+        });
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    showSubmissionTooCloseSnackbar() {
+        SnackBar.success(
+            Translator.get('system_messages.error.do_not_submit_new_temp_until', {
+                dateTime: this.nextAllowedSubmitTime,
+            }),
+        );
+    }
+
+    render() {
+            return html `
       <div class="container view-wrapper fevermap-entry-view">
         <div class="fevermap-data-view-content">
           <div class="entry-history-title-area">

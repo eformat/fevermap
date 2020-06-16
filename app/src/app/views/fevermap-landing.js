@@ -7,36 +7,36 @@ import PWAService from '../services/pwa-service.js';
 import '../components/ios-pwa-install-prompt.js';
 
 class FevermapLanding extends LitElement {
-  static get properties() {
-    return {
-      currentParticipantCount: { type: Number },
-    };
-  }
+    static get properties() {
+        return {
+            currentParticipantCount: { type: Number },
+        };
+    }
 
-  static get styles() {
-    return [];
-  }
+    static get styles() {
+        return [];
+    }
 
-  constructor() {
-    super();
-    this.currentParticipantCount = 0;
-  }
+    constructor() {
+        super();
+        this.currentParticipantCount = 0;
+    }
 
-  firstUpdated() {
-    this.getCurrentStats();
-    GoogleAnalyticsService.reportNavigationAction('About View');
-  }
+    firstUpdated() {
+        this.getCurrentStats();
+        GoogleAnalyticsService.reportNavigationAction('About View');
+    }
 
-  async getCurrentStats() {
-    const stats = await DataEntryService.getStats();
-    this.currentParticipantCount = stats ? stats.data.submitters.total : 0;
-  }
+    async getCurrentStats() {
+        const stats = await DataEntryService.getStats();
+        this.currentParticipantCount = stats ? stats.data.submitters.total : 0;
+    }
 
-  render() {
-    return html`
+    render() {
+            return html `
       <div class="container view-wrapper">
         <div class="fevermap-landing-content">
-          <a href="https://crowdtracker.net"><img src="${logoImg}" height='97px' width='250px' /></a>
+          <a href="https://vicsafecommute.net"><img src="${logoImg}" height='97px' width='250px' /></a>
           ${PWAService.installable()
             ? html`
                 <material-button

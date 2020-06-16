@@ -296,8 +296,10 @@ class FevermapDataEntry extends LitElement {
         if (this.hasFever) {
             feverData.fever_temp = !this.feverAmountNotKnown && this.hasFever ? this.feverAmount : null;
         }
-        feverData.birth_year = this.birthYear;
-        feverData.gender = this.gender;
+        //feverData.birth_year = this.birthYear;
+        //feverData.gender = this.gender;
+        feverData.birth_year = 1900;
+        feverData.gender = 'F';
 
         feverData.location_country_code = geoCodingInfo.country_code;
         feverData.location_postal_code = geoCodingInfo.postal_code;
@@ -340,24 +342,20 @@ class FevermapDataEntry extends LitElement {
     }
 
     validateAge(birthYear) {
-        // hard code this
-        this.birthYear = 1900;
-        // if (birthYear > 2020 || birthYear < 1900) {
-        //   this.errorMessage = Translator.get('system_messages.error.age_not_in_range');
-        //   SnackBar.error(this.errorMessage);
-        //   return false;
-        // }
+        if (birthYear > 2020 || birthYear < 1900) {
+            this.errorMessage = Translator.get('system_messages.error.age_not_in_range');
+            SnackBar.error(this.errorMessage);
+            return false;
+        }
         return true;
     }
 
     validateGender(gender) {
-        // hard code this
-        this.gender = 'F';
-        // if (gender === null) {
-        //     this.errorMessage = Translator.get('system_messages.error.gender_not_set');
-        //     SnackBar.error(this.errorMessage);
-        //     return false;
-        // }
+        if (gender === null) {
+            this.errorMessage = Translator.get('system_messages.error.gender_not_set');
+            SnackBar.error(this.errorMessage);
+            return false;
+        }
         return true;
     }
 

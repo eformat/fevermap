@@ -69,14 +69,16 @@ class FevermapDataEntry extends LitElement {
     this.latestEntry = latestEntry || null;
     this.geoCodingInfo = latestEntry ? JSON.parse(lastLocation) : null;
     this.covidDiagnosed = covidDiagnosed === 'true';
+    
+    this.crowdingLevel = "Not Crowded";
 
-    this.firstTimeSubmitting = this.gender == null || this.birthYear == null;
+    this.firstTimeSubmitting = this.gender == "M" || this.birthYear == 1971;
 
     this.createCountrySelectOptions();
     this.queuedEntries = [];
 
     this.currentQuestion = 1;
-    this.questionCount = 4;
+    this.questionCount = 2;
     this.symptoms = [];
     this.transitioning = false;
   }
@@ -190,6 +192,16 @@ class FevermapDataEntry extends LitElement {
     const secondaryTempInput = this.querySelector('#temp-input-secondary');
 
     tempMeter.addEventListener('input', e => {
+      if (e.target.value <= 25) {
+        this.crowdingLevel = "Not Crowded";
+      } else if ( e.target.value > 25 && e.target.value <= 50) {
+        this.crowdingLevel = "Somewhat Crowded";
+      } else if ( e.target.value > 50 && e.target.value <= 75) {
+        this.crowdingLevel = "Over Crowded";
+      } else if ( e.target.value > 85) {
+        this.crowdingLevel = "Super Crowded";
+      }
+
       this.feverAmount = e.target.value;
 
       this.feverAmountInMainUnit = FeverDataUtil.getFeverWithUnitWithoutSuffix(
@@ -509,7 +521,7 @@ class FevermapDataEntry extends LitElement {
   }
 
   handleFeverInfoSubmit() {
-    this.nextQuestion(() => this.handleDialogFocus('#question-3'));
+    this.nextQuestion(() => this.handleDialogFocus('#question-2'));
   }
 
   handleUnmeasuredFeverSubmit(hasFever) {
@@ -648,7 +660,7 @@ class FevermapDataEntry extends LitElement {
       <div class="entry-dialog-close-button">
         <material-icon @click="${this.closeView}" icon="close"></material-icon>
       </div>
-<!--      <div class="fevermap-entry-window mdc-elevation--z9" id="question-1" tabindex="0">
+<!--  <div class="fevermap-entry-window mdc-elevation--z9" id="question-1" tabindex="0">
         ${this.getPersonalQuestions()}
       </div> -->
       <div
@@ -710,37 +722,35 @@ class FevermapDataEntry extends LitElement {
         1/${this.questionCount}
       </div>
       <div class="title-holder">
-        <h2>${Translator.get('entry.new_entry')}</h2>
+        <h2>Report Crowding</h2>
         <p class="temperature-title">
-          ${Translator.get('entry.questions.what_is_your_temperature')}
+          What is the crowding level?
         </p>
       </div>
       <div class="entry-field fever-meter-field">
         <div class="fever-meters">
           <div class="fever-slider">
             <div class="fever-amount-display">
-              <div class="fever-amount-field  mdc-elevation--z3">
+              <div class="title-holder mdc-elevation--z1">
                 <input
                   id="temp-input-main"
-                  type="number"
-                  step="0.1"
-                  .value="${this.feverAmountInMainUnit}"
+                  type="text"
+                  .value="${this.crowdingLevel}"
                 />
-                <p>${FeverDataUtil.getFeverUnitSuffix(false, this.geoCodingInfo)}</p>
               </div>
             </div>
             <div class="fever-slider-element">
               <input
                 type="range"
                 id="temperature-meter"
-                min="35"
-                max="42"
-                step="0.1"
+                min="10"
+                max="100"
+                step="5"
                 .value="${this.feverAmount}"
                 tabindex="-1"
               />
             </div>
-            <div class="fever-amount-display">
+<!--            <div class="fever-amount-display">
               <div class="fever-amount-field  mdc-elevation--z3">
                 <input
                   type="number"
@@ -750,23 +760,20 @@ class FevermapDataEntry extends LitElement {
                 />
                 <p>${FeverDataUtil.getFeverUnitSuffix(true, this.geoCodingInfo)}</p>
               </div>
-            </div>
+            </div> -->
           </div>
 
           <div class="proceed-button">
             <button
               class="mdc-button mdc-button--raised"
-              @click="${() => this.handleFeverInfoSubmit()}"
-            >
+              @click="${() => this.handleFeverInfoSubmit()}">
               <div class="mdc-button__ripple"></div>
 
               <i class="material-icons mdc-button__icon" aria-hidden="true">done</i>
-              <span class="mdc-button__label"
-                >${Translator.get('entry.questions.set_temperature')}</span
-              >
+              <span class="mdc-button__label">Set Crowding Level</span>
             </button>
           </div>
-          <div class="fever-not-measured-prompt">
+   <!--       <div class="fever-not-measured-prompt">
             <p>${Translator.get('entry.questions.havent_measured_but')}</p>
             <div class="fever-not-measured-buttons">
               <div class="fever-not-measured-buttons--feverish">
@@ -786,7 +793,7 @@ class FevermapDataEntry extends LitElement {
                 ></material-button>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     `;

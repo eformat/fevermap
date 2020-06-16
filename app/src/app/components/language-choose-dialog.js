@@ -3,52 +3,55 @@ import Translator from '../util/translator.js';
 import './language-choose-dialog-button.js';
 
 class LanguageChooseDialog extends LitElement {
-  static get properties() {
-    return {
-      possibleLanguages: { type: Array },
-      defaultedLanguage: { type: Object },
-      languageFromUri: { type: Object },
-    };
-  }
-
-  constructor() {
-    super();
-    this.possibleLanguages = Translator.getPossibleLanguages().sort((a, b) =>
-      a.name > b.name ? 1 : -1,
-    );
-    this.defaultedLanguage = Translator.getLang();
-    this.fallbackLanguageCode = 'en';
-    this.getLanguageFromUri();
-  }
-
-  getLanguageFromUri() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const langFromURI = urlParams.get('lang');
-    if (this.possibleLanguages.find(elem => elem.key === langFromURI)) {
-      this.languageFromUri = this.defaultedLanguage;
-      this.languageFromUri.key = langFromURI;
-      this.setPreferredLang(this.languageFromUri);
+    static get properties() {
+        return {
+            possibleLanguages: { type: Array },
+            defaultedLanguage: { type: Object },
+            languageFromUri: { type: Object },
+        };
     }
-  }
 
-  firstUpdated() {
-    setTimeout(() => {
-      this.querySelector('.language-choose-dialog').classList.remove(
-        'language-choose-dialog--hidden',
-      );
-    }, 100);
-  }
+    constructor() {
+        super();
+        this.possibleLanguages = Translator.getPossibleLanguages().sort((a, b) =>
+            a.name > b.name ? 1 : -1,
+        );
+        this.defaultedLanguage = Translator.getLang();
+        this.fallbackLanguageCode = 'en';
+        this.getLanguageFromUri();
+    }
 
-  // eslint-disable-next-line class-methods-use-this
-  setPreferredLang(lang) {
-    localStorage.setItem('PREFERRED_LANGUAGE', lang.key);
-    localStorage.setItem('USER_SET_LANG', lang.key);
-    Translator.setLang(lang.key);
-    window.location.reload();
-  }
+    getLanguageFromUri() {
+        // hard code language for now
 
-  render() {
-    return html`
+        const urlParams = new URLSearchParams(window.location.search);
+        //const langFromURI = urlParams.get('lang');
+        const langFromURI = 'en'
+        if (this.possibleLanguages.find(elem => elem.key === langFromURI)) {
+            this.languageFromUri = this.defaultedLanguage;
+            this.languageFromUri.key = langFromURI;
+            this.setPreferredLang(this.languageFromUri);
+        }
+    }
+
+    firstUpdated() {
+        setTimeout(() => {
+            this.querySelector('.language-choose-dialog').classList.remove(
+                'language-choose-dialog--hidden',
+            );
+        }, 100);
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    setPreferredLang(lang) {
+        localStorage.setItem('PREFERRED_LANGUAGE', lang.key);
+        localStorage.setItem('USER_SET_LANG', lang.key);
+        Translator.setLang(lang.key);
+        window.location.reload();
+    }
+
+    render() {
+            return html `
       <div class="language-choose-dialog language-choose-dialog--hidden">
         <div class="language-choose-dialog--window mdc-elevation--z3">
           <h1>

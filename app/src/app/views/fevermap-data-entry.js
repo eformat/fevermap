@@ -369,11 +369,11 @@ class FevermapDataEntry extends LitElement {
     }
 
     validateFeverTemp(feverTemp) {
-        if (feverTemp != null && (feverTemp < 35 || feverTemp > 44)) {
-            this.errorMessage = Translator.get('system_messages.error.fever_temp_value_invalid');
-            SnackBar.error(this.errorMessage);
-            return false;
-        }
+        // if (feverTemp != null && (feverTemp < 35 || feverTemp > 44)) {
+        //     this.errorMessage = Translator.get('system_messages.error.fever_temp_value_invalid');
+        //     SnackBar.error(this.errorMessage);
+        //     return false;
+        // }
         return true;
     }
 

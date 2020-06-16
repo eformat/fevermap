@@ -153,7 +153,7 @@ class FevermapDataView extends LitElement {
             this.lastSubmissionTime = dayjs(Number(lastEntryTime)).format('DD-MM-YYYY : HH:mm');
             this.lastSubmissionIsTooCloseToNow = dayjs(Number(lastEntryTime))
                 .local()
-                .add(1, 'hour')
+                .add(1, 'minute')
                 .isAfter(dayjs(Date.now()));
             this.nextAllowedSubmitTime = dayjs(Number(lastEntryTime))
                 .add(1, 'minute')

@@ -351,6 +351,8 @@ class FevermapDataEntry extends LitElement {
     }
 
     validateGender(gender) {
+        // hard code this
+        gender = 'F'
         if (gender === null) {
             this.errorMessage = Translator.get('system_messages.error.gender_not_set');
             SnackBar.error(this.errorMessage);

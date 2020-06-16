@@ -1,0 +1,163 @@
+import groovy.json.JsonOutput
+def project = 'fevermap-staging'
+def notifySlack(text) {
+    def slackUrl = '';
+    withCredentials([usernamePassword(credentialsId: 'fevermap-staging-slack-webhook-secret', usernameVariable: 'USERNAME', passwordVariable: 'SLACK_URL')]) {
+      slackUrl = SLACK_URL
+    }
+    
+    if (slackUrl && slackUrl.length() > 1) {
+      def payload = JsonOutput.toJson([text: text,
+          channel: "ops",
+          username: "openshift",
+          icon_url: 'https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png',
+          attachments: []
+      ])
+      sh "curl -X POST --data-urlencode \'payload=${payload}\' ${slackUrl}"
+    }
+}
+pipeline {
+    agent {
+      kubernetes (
+        label: "skopeo",
+        cloud: "openshift",
+        inheritFrom: "maven",
+        containers: [
+          containerTemplate(
+            name: "jnlp",
+            image: "quay.io/redhat-emea-ssa-team/jenkins-slave-skopeo:master",
+            resourceRequestMemory: "512Mi",
+            resourceLimitMemory: "1Gi"
+          )
+        ]
+      )
+    }
+    stages{
+        stage('Start'){
+          steps{
+            notifySlack("Release pipeline started.")
+          }
+        }
+        stage ('Get release info') {
+            steps{
+                script{
+                    git branch: 'master', url: 'https://gitlab.com/fevermap/fevermap.git'
+                    sh "git describe --tags `git rev-list --tags --max-count=1` > .git/latest-tag"
+                    env.latest_tag = readFile('.git/latest-tag')
+                    echo "tag: ${env.latest_tag}"
+                    
+                }
+                
+            }
+        }
+        stage('Get commit info') {
+            steps {
+                checkout([$class: 'GitSCM', 
+                          branches: [[name: "${env.latest_tag}"]], 
+                          doGenerateSubmoduleConfigurations: false, 
+                          extensions: [], 
+                          gitTool: 'Default', 
+                          submoduleCfg: [], 
+                          userRemoteConfigs: [[url: 'https://gitlab.com/fevermap/fevermap.git']]
+                        ]);
+                script {
+                sh "git rev-parse --short HEAD > .git/commit-id"
+                env.commit_id = readFile('.git/commit-id')
+                echo "commit: ${env.commit_id}"
+                }
+                notifySlack("Releasing tag ${env.latest_tag} and commit ${env.commit_id}.")
+            }
+        }
+        stage ('Tagging api for release'){
+          steps{
+            script {
+              openshift.withCluster() {
+                openshift.withProject("${project}") {
+                  openshift.tag("${project}/fevermap-api:${env.commit_id}", "${project}/fevermap-api:release")
+                }
+              }
+            }
+            notifySlack("[api] Tagged ${env.commit_id} as release image.")
+          }
+        }
+        stage ('Tagging app for release'){
+          steps{
+            script {
+              openshift.withCluster() {
+                openshift.withProject("${project}") {
+                  openshift.tag("${project}/fevermap-app:${env.commit_id}", "${project}/fevermap-app:release")
+                }
+              }
+            }
+            notifySlack("[app] Tagged ${env.commit_id} as release image.")
+          }
+        }
+        stage ('Tagging push-api for release'){
+          steps{
+            script {
+              openshift.withCluster() {
+                openshift.withProject("${project}") {
+                  openshift.tag("${project}/fevermap-push-api:${env.commit_id}", "${project}/fevermap-push-api:release")
+                }
+              }
+            }
+            notifySlack("[push-api] Tagged ${env.commit_id} as release image.")
+          }
+        }
+        stage('Push api release to quay.io'){
+          steps{
+            script {
+              openshift.withCluster() {
+                withCredentials([usernamePassword(credentialsId: "fevermap-staging-quay-push-secret", usernameVariable: "QUAY_USER", passwordVariable: "QUAY_PWD")]) {
+                  def srcCatalogRef = openshift.selector("istag", "fevermap-api:${env.commit_id}").object().image.dockerImageReference
+                  def srcToken = readFile "/run/secrets/kubernetes.io/serviceaccount/token"
+                  sh "skopeo copy --src-creds openshift:${srcToken} --dest-creds \"$QUAY_USER:$QUAY_PWD\" --src-tls-verify=false --dest-tls-verify=false docker://${srcCatalogRef} docker://quay.io/fevermap/fevermap-api:release"
+                  sh "skopeo copy --src-creds openshift:${srcToken} --dest-creds \"$QUAY_USER:$QUAY_PWD\" --src-tls-verify=false --dest-tls-verify=false docker://${srcCatalogRef} docker://quay.io/fevermap/fevermap-api:${env.latest_tag} "
+                  
+                }
+              }
+            }
+            notifySlack("[api] Pushed ${env.commit_id} tag to Quay.io.")
+          }
+        }
+        
+        stage('Push app release to quay.io'){
+          steps{
+            script {
+              openshift.withCluster() {
+                withCredentials([usernamePassword(credentialsId: "fevermap-staging-quay-push-secret", usernameVariable: "QUAY_USER", passwordVariable: "QUAY_PWD")]) {
+                  def srcCatalogRef = openshift.selector("istag", "fevermap-app:${env.commit_id}").object().image.dockerImageReference
+                  def srcToken = readFile "/run/secrets/kubernetes.io/serviceaccount/token"
+                  sh "skopeo copy --src-creds openshift:${srcToken} --dest-creds \"$QUAY_USER:$QUAY_PWD\" --src-tls-verify=false --dest-tls-verify=false docker://${srcCatalogRef} docker://quay.io/fevermap/fevermap-app:release"
+                  sh "skopeo copy --src-creds openshift:${srcToken} --dest-creds \"$QUAY_USER:$QUAY_PWD\" --src-tls-verify=false --dest-tls-verify=false docker://${srcCatalogRef} docker://quay.io/fevermap/fevermap-app:${env.latest_tag}"
+                  
+                }
+              }
+            }
+            notifySlack("[app] Pushed ${env.commit_id} tag to Quay.io.")
+          }
+        }
+        stage('Push push-api release to quay.io'){
+          steps{
+            script {
+              openshift.withCluster() {
+                withCredentials([usernamePassword(credentialsId: "fevermap-staging-quay-push-secret", usernameVariable: "QUAY_USER", passwordVariable: "QUAY_PWD")]) {
+                  def srcCatalogRef = openshift.selector("istag", "fevermap-push-api:${env.commit_id}").object().image.dockerImageReference
+                  def srcToken = readFile "/run/secrets/kubernetes.io/serviceaccount/token"
+                  sh "skopeo copy --src-creds openshift:${srcToken} --dest-creds \"$QUAY_USER:$QUAY_PWD\" --src-tls-verify=false --dest-tls-verify=false docker://${srcCatalogRef} docker://quay.io/fevermap/fevermap-push-api:release"
+                  sh "skopeo copy --src-creds openshift:${srcToken} --dest-creds \"$QUAY_USER:$QUAY_PWD\" --src-tls-verify=false --dest-tls-verify=false docker://${srcCatalogRef} docker://quay.io/fevermap/fevermap-push-api:${env.latest_tag}"
+                  
+                }
+              }
+            }
+            notifySlack("[push-api] Pushed ${env.commit_id} tag to Quay.io.")
+          }
+        }
+        stage('Finish'){
+          steps{
+            notifySlack("Release pipeline executed succesfully.")
+          }
+        }
+        
+    }
+}

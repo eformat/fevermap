@@ -1,0 +1,143 @@
+{
+  "lang_name": "Svenska",
+  "language": "Språk",
+  "fevermap_title": "Fevermap",
+  "back": "Back",
+  "today": "Today",
+  "user_description": "Du är en %{age} år gammal %{gender}, med %{diagnosis}",
+  "a_covid_diagnosis": "COVID-19 diagnos",
+  "no_covid_diagnosis": "ingen COVID-19 diagnos",
+
+  "landing": {
+    "about": "Om Fevermap",
+    "about_title": "Vad är Fevermap?",
+    "about_content_explanation": "Fevermap är en webbapplikation skapad för att samla in data om COVID-19 epidemin.",
+    "about_current_methods": "Nuvarande metoder för att följa med coronavirusets spridning ger inte en fullständig bild av situationen, eftersom det finns inte tillräckligt med tid eller testutrustning för att testa alla människor.",
+    "about_solution": "Fevermap är en lösning till detta problem med hjälp av datainsamlingen. Med Fevermap kan vem som helst rapportera sina egna symtom på COVID-19, till exempel feber och torrhosta. Med denna information kan vi uppskatta i realtid det verkliga antalet COVID-19 infektioner. Som resultat av datainsamlingen ger vi planerings- och beslutsstöd till myndigheterna, till exempel beträffande de lämpliga skyddsåtgärderna.",
+    "about_data_collection": "Informationen som samlas in via Fevermap är anonym. Datan används för att öka medvetenheten på global nivå, men ingen personlig information kan bevisas framåt.",
+    "about_current_participant_count": "Hittills har Fevermap samlat in rapporter från %{participantCount} personer.",
+
+    "how_to_participate": "Hur kan jag delta?",
+    "participation_info": "Första gången du använder Fevermap anmäler du din ålder och kön. Sen räcker det att mäta kroppstemperaturen (förhoppningsvis dagligen) och att anmäla den tillsammans med de andra möjliga symtomen du har.",
+    "info_disclaimer": "Vi ber inte om information som kan identifiera dig.",
+
+    "how_will_my_data_be_used": "Hur kommer min data att användas?",
+    "data_use_explanation": "Vi värnar om din integritet och ingen personlig information kan bevisas framåt. All data anonymiseras och delas som öppen data genom vår API."
+  },
+  "entry": {
+    "data_entry": "Dina data",
+    "first_entry_disclaimer": "Din data skickas in på basen av den dator eller telefon du använder. Vi skulle uppskatta om du kan använda samma apparat varje gång. Detta hjälper oss att följa din febernivå bättre.",
+    "last_submission": "Senaste registrering",
+    "submission_period_disclaimer": "För att undvika onödiga data, så begränsas registreringar till var 12:e timme.",
+    "sync_now": "Synkronisera nu",
+    "new_entry": "Ny registrering",
+    "first_time_disclaimer": "Eftersom detta är första gången du använder Fevermap, frågar vi några frågor först.",
+    "these_questions_wont_be_repeated": "Följande gång behöver du inte svara på dessa.",
+    "choose_language": "välj språk",
+    "queued_entries": "You have queued entries",
+    "send_now": "Send now",
+    "questions": {
+      "what_is_your_temperature": "Vad är din kroppstemperatur?",
+      "temperature": "Temperatur",
+      "how_much": "Hur hög?",
+      "degrees_of_fever": "%{degrees} grader feber",
+      "havent_measured_but": "Jag har inte mätt men...",
+      "feel_healthy": "Jag mår bra",
+      "feel_feverish": "Jag känner mig febrig",
+      "set_temperature": "Välj temperatur",
+      "other_symptoms": "Andra symptom?",
+      "choose_all_that_apply": "Välj alla som stämmer in",
+      "difficulty_to_breathe": "Svårt att andas",
+      "cough": "Hosta",
+      "sore_throat": "Ont i halsen",
+      "muscular_pain": "Muskelvärk",
+      "positive_covid_diagnosis": "Jag har en positiv COVID-19 -diagnos.",
+      "set_symptoms": "Välj symptom",
+      "birth_year": "Födelseår",
+      "birth_year_placeholder": "Födelseår (från 1900 - 2020)",
+      "gender_in_passport": "Kön, som angivet i ditt pass eller annat officiellt dokument",
+      "male": "Man",
+      "female": "Kvinna",
+      "location_information": "Plats",
+      "whats_your_location": "Var befinner du dig?",
+      "city": "Stad",
+      "country": "Land",
+      "postal_code": "Postnummer",
+      "location_determination_subtitle": "Din plats hämtas genom plats-APIn, vänligen tillåt platsbestämning.",
+      "location_change_subtitle": "För att uppdatera platsinformation, välj land och skriv in ditt postnummer, eller tryck på knappen undertill.",
+      "update_location": "Uppdatera plats",
+      "use_gps": "Uppdatera plats genom GPS",
+      "set_location_and_submit": "Välj plats och skicka in"
+    },
+    "previous_submissions": "Tidigare registreringar",
+    "submit": "Skicka in",
+    "save": "Spara",
+
+    "last_submission_was_done": "Du har senast skickat in %{date}",
+    "submission_count_text": "Du har skickat in feberdata ",
+    "submission_count_times": "gånger",
+    "currently_holding_a_streak_of": "Du har just nu en serie på: ",
+    "streak_days": "efterföljande dagar"
+  },
+
+  "history": {
+    "title": "Historik",
+    "your_streak": "Efterföljande dagar",
+    "days": "Dagar",
+    "total_entries": "Antal inlägg",
+    "measurements": "mätningar",
+    "add_entry": "Lägg till"
+  },
+  "stats": {
+    "stats": "Statistik"
+  },
+  "system_messages": {
+    "success": {
+      "location_update": "Platsen uppdaterades",
+      "data_entry": "Registreringen lyckades",
+      "offline_entry_queued": "Det verkar som om du är offline, inlägget är satt i kö.",
+      "entry_send_failed_queued": "Det gick inte att skicka, inlägget väntar i kö.",
+      "sync_finished": "Synkroniseringen lyckades.",
+      "subscribe_success": "Du kommer att få push-aviseringar",
+      "unsubscribe_success": "Du kommer inte längre att få push-aviseringar"
+    },
+    "error": {
+      "age_not_in_range": "Ditt födelseår är inte i det tillåtna intervallet (1900 - 2020).",
+      "fever_temp_value_invalid": "Din febertemperatur är inte giltig.",
+      "location_data_invalid": "Den givna platset är inte giltig.",
+      "api_data_invalid": "Data som skickades var inte giltiga.",
+      "gender_not_set": "Du har inte valt kön.",
+      "do_not_submit_new_temp_until": "Vänligen skicka inte ett nytt inlägg förrän %{dateTime}",
+      "subscribe_error": "Det gick inte att registrera för push-aviseringar",
+      "unsubscribe_error": "Det gick inte att avregistrera push-aviseringar"
+    }
+  },
+  "dialog": {
+    "pwa_installer": {
+      "title": "Installera Fevermap",
+      "content": "Fevermap kan installeras som en Progressive Web App. Om du gör det fungerar appen smidigare, och vi kan ge tilläggstjänster som push-notifikationer (på kommande).",
+      "approve_text": "Installera",
+      "decline_text": "Kanske senare"
+    },
+    "notifications": {
+      "title": "Allow notifications",
+      "content": "Fevermap would like to offer you a daily notification reminding you to log your daily health status. Allow notifications?",
+      "approve_text": "Allow notifications",
+      "decline_text": "No please"
+    }
+  },
+  "notification": {
+    "daily_reminder": {
+      "title": "Good evening! \uD83D\uDE0A",
+      "content": "How are you feeling today?",
+      "healthy": "Healthy",
+      "sick": "Sick"
+    },
+    "thank_you": {
+      "title": "Successfully submitted data.",
+      "content": "Thank you for submitting!"
+    },
+    "subscribe_to_notifications": "Subscribe to notifications",
+    "unsubscribe_from_notifications": "Unsubscribe from notifications"
+  }
+}

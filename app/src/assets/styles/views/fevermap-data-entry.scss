@@ -1,0 +1,676 @@
+@use "~@material/button/mixins";
+@import "../palette";
+
+.container {
+  margin-bottom: 1rem;
+}
+
+.green-text {
+  color: #32cd32;
+}
+
+.fevermap-data-entry-content {
+  min-height: 85vh;
+  padding: 7.5vh 0;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.entry-dialog-close-button {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 999;
+  color: $gunmetal;
+  material-icon {
+    font-size: 2rem;
+    span {
+      cursor: pointer;
+    }
+  }
+}
+
+.fevermap-entry-dialog {
+
+  &--hidden {
+    opacity: 0;
+  }
+  display: flex;
+  align-items: center;
+  opacity: 1;
+  transition: 0.3s ease-in;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #f7f7f7;
+  z-index:100;
+}
+
+.question-number-holder {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 0.9rem;
+  color: #8e8e8e;
+}
+
+.entry-fields {
+
+  &--disabled {
+    pointer-events: none;
+    opacity: 0.1;
+  }
+
+  .entry-field {
+    margin-bottom: 4rem;
+    max-width: 40rem;
+  }
+
+  p {
+    font-size: 1.2rem;
+  }
+}
+
+.mdc-text-field {
+  width: 100%;
+}
+
+.gender-input-holder {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border-radius: 5px;
+  max-width: 30rem;
+  margin-left: auto;
+  margin-right: auto;
+
+  &--none-selected {
+    background: ghostwhite;
+
+    .gender-input:first-child {
+      border-right: 2px solid;
+    }
+  }
+
+  .gender-input {
+    transition: 0.2s ease-in;
+    flex-basis: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 1.5em 0 0;
+    border-radius: 5px;
+    cursor: pointer;
+
+    img {
+      width: 35%;
+      max-width: 250px;
+    }
+
+    &--female {
+      img {
+        width: 40%;
+      }
+    }
+
+    &:hover {
+      background: #32cd3222;
+    }
+
+    &--selected {
+      background: #32cd32;
+
+      &:hover {
+        background: #32cd32;
+
+      }
+
+      img {
+        filter: invert(1);
+      }
+
+      p {
+        color: #FFF;
+      }
+    }
+  }
+}
+
+.submit-button {
+  width: 70%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .mdc-button {
+    width: 100%;
+    height: 60px;
+    font-size: 1.3rem;
+
+    &:not(:disabled) {
+      color: #32cd32;
+      border-color: #32cd32;
+    }
+  }
+}
+
+p.subtitle {
+  margin: 0 0 1rem 0;
+  font-size: 0.9rem;
+}
+
+p.mdc-theme--error {
+  font-size: 1rem;
+}
+
+.geolocation-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  button {
+    &:not(:disabled) {
+      color: #3f51b5;
+      border-color: #3f51b5;
+    }
+  }
+}
+
+.entry-disclaimer {
+  p {
+    color: #ed143d;
+  }
+}
+
+.queued-entries-field {
+  p {
+    color: #FF9800;
+  }
+  .submit-queued-button {
+    button {
+      &:not(:disabled) {
+        color: #FF9800;
+        border-color: #FF9800;
+      }
+    }
+  }
+}
+
+.submission-summary {
+  p {
+    font-size: 1rem;
+    color: inherit;
+  }
+
+  .submission {
+    &--has-fever {
+      color: #ed143d
+    }
+
+    &--no-fever {
+      color: #32cd32;
+    }
+  }
+}
+
+.first-entry-disclaimer {
+  color: #ed143d;
+}
+
+.title-holder {
+  text-align: center;
+}
+
+.fevermap-entry-carousel {
+  min-height: inherit;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  padding-right: 4rem;
+
+  &--full-width {
+    width: calc(100vw * 3.75);
+  }
+
+  &--smaller-width {
+    width: calc(100vw * 3.15);
+  }
+
+  .fevermap-entry-window {
+    width: calc(85vw - 4rem);
+    background: $white;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 1rem 2rem 0;
+    justify-content: space-between;
+    position: relative;
+
+    .back-button {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+
+      material-icon {
+        display: flex;
+      }
+    }
+
+    .entry-field {
+      width: 60%;
+    }
+
+    .subtitle {
+      color: $gunmetallighter;
+    }
+
+    h2 {
+      font-weight: 400;
+    }
+
+    p {
+      font-size: 0.9rem;
+    }
+
+    .proceed-button {
+      text-align:center;
+      margin-bottom: 1rem;
+      .mdc-button {
+        background: $bluegreen;
+      }
+    }
+  }
+}
+
+.temperature-title {
+  font-size: 1.2rem;
+  margin: 0 0 2rem;
+}
+
+.symptoms-title {
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+}
+
+#dont-know-temperature {
+  cursor: pointer;
+}
+
+.fever-amount-display {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin-bottom: 2rem;
+  .fever-amount-field {
+    z-index: 10;
+    width: 4.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0.5rem;
+    font-size: 1.4rem;
+    border-radius: 5px;
+    input {
+      width: 100%;
+      font-size: 0.9rem;
+      border: none;
+    }
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    input[type='number'] {
+      -moz-appearance: textfield;
+    }
+
+    p {
+      margin: 0
+    }
+  }
+}
+
+.fever-amount-display:first-child {
+  margin-right: -25%;
+}
+
+.fever-amount-display:last-child {
+  margin-left: -25%;
+}
+
+.fever-not-measured-field {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  p {
+    text-decoration: underline;
+    margin: 0;
+  }
+}
+
+.fever-not-measured-prompt {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  p {
+    margin: 0 0 1rem !important;
+  }
+  .fever-not-measured-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0 15%;
+    div {
+      flex-basis: 45%;
+      text-align: center;
+      color: #FFF;
+      display: flex;
+      align-items: center;
+      material-button {
+        border-radius: 5px;
+        height: 100%;
+        width: 90%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        div {
+          height: 100%;
+          flex-basis: 100%;
+        }
+      }
+      p {
+        color: #FFF;
+        font-size: 0.8rem;
+      }
+      button {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        padding: 0.5rem;
+        font-size: 0.7rem;
+
+        i {
+          margin: 0 0 0.2rem;
+        }
+      }
+    }
+
+      button {
+      &:focus {
+        border-color: $bluegreendarker;
+        background-color: $bluegreenlighter;
+      }
+      background: #fff;
+        color: #484848;
+        border: $bluegreen 2px solid;
+      }
+
+    &--feverish {
+      justify-content: flex-start;
+    }
+
+    &--healthy {
+      justify-content: flex-end;
+    }
+  }
+}
+
+$symptom-color: #0898ad;
+.symptom-holder {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 60%;
+  align-items: center;
+  .symptom {
+    cursor: pointer;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    border: 2px solid $symptom-color;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    transition: 0.1s linear;
+
+    &:focus {
+      border-color: change-color($symptom-color, $lightness: 70%);
+    }
+
+    &--selected {
+      background: #0898ad;
+      p {
+        color: #FFF;
+      }
+    }
+    p {
+      font-weight: 500;
+      margin: 0;
+    }
+  }
+}
+
+label {
+  font-size: 0.9rem;
+}
+
+.fever-meter-field {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  .fever-meters {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 90%;
+    .fever-slider {
+      height: 80%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .fever-slider-element {
+        display: flex;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+      }
+    }
+
+    .proceed-button {
+      margin: 2rem 0;
+    }
+  }
+}
+
+#temperature-meter {
+  -webkit-appearance: none;
+  appearance: none;
+  -moz-appearance: none;
+
+  height: 12px;
+  width: 50%;
+  background: linear-gradient(45deg, #03A9F4, #F44336 40%);
+  border-radius: 20px;
+
+  -webkit-transform:rotate(-90deg);
+  -moz-transform:rotate(-90deg);
+  -o-transform:rotate(-90deg);
+  -ms-transform:rotate(-90deg);
+  transform:rotate(-90deg);
+  outline: none;
+  cursor: pointer;
+
+}
+
+input[type="range"]::-webkit-slider-thumb
+{
+  -webkit-appearance: none;
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+  box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
+  background: #FFF;
+  border: 1px solid;
+}
+
+input[type="range"]::-moz-range-thumb {
+
+  -webkit-appearance: none;
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+  box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
+  background: #FFF;
+  border: 1px solid;
+}
+
+input[type="range"]::-webkit-slider-container {
+
+}
+input[type="range"]::-webkit-slider-runnable-track {
+
+}
+
+@media only screen and (max-width: 780px) {
+
+  .fevermap-entry-dialog {
+    margin-bottom: 0 !important;
+  }
+
+  .fevermap-entry-carousel  {
+    .fevermap-entry-window {
+
+      p.subtitle {
+        font-size: 0.8rem;
+      }
+      .entry-field {
+        width: 100%;
+        p {
+          // margin: 0 0 0.5rem;
+        }
+
+        .gender-input-holder {
+          width: 80%;
+          margin: 0 auto 1rem;
+          .gender-input {
+            padding: 0.5rem 0 0.5rem;
+            img {
+              width: 15%;
+              max-width: 250px;
+            }
+            &--female {
+              img {
+                width: 15%;
+              }
+            }
+            p {
+              margin: 0.5rem 0 0;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .previous-submission {
+    flex-direction: column;
+    &--symptoms {
+      flex-direction: column;
+      p {
+        justify-content: flex-start;
+      }
+    }
+  }
+  .symptom-holder {
+    width: 100%;
+  }
+
+  .fever-meter-field {
+    height: 100%;
+    .fever-meters {
+      .fever-slider {
+        height: 70%;
+      }
+      .fever-amount-display {
+        .fever-amount-field {
+          width: 3.75rem;
+        }
+        p {
+          margin: 0;
+        }
+      }
+    }
+  }
+  .fever-not-measured-prompt {
+    .fever-not-measured-buttons {
+      margin: 0;
+    }
+  }
+}
+
+@media only screen and (max-width: 400px) {
+
+  .temperature-title {
+    margin: 0;
+  }
+  .fevermap-entry-dialog {
+    margin-bottom: 3rem !important;
+  }
+
+  .fevermap-data-entry-content {
+    min-height: 80vh;
+    padding: 5vh 0;
+  }
+
+  .fevermap-entry-carousel {
+    .fevermap-entry-window {
+      p {
+        font-size: 0.7rem;
+      }
+    }
+  }
+
+  .fever-meter-field {
+    .fever-meters {
+      .proceed-button {
+        margin: 1rem 0;
+      }
+      .fever-slider {
+        height: 60%;
+      }
+    }
+  }
+
+
+  p.subtitle {
+    margin: 0 0 0.5rem;
+  }
+
+  .fever-not-measured-prompt {
+    p {
+      margin: 0 0 0.5rem !important;
+    }
+    .fever-not-measured-buttons {
+      div {
+        flex-basis: 50%;
+        button {
+          font-size: 0.5rem;
+        }
+      }
+    }
+  }
+}

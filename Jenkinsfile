@@ -88,13 +88,13 @@ pipeline {
         }
 
         stage("Build (Compile App)") {
-            agent {
-                node {
-                    label "master"
-                }
-            }
             parallel {
                 stage("Build App") {
+                    agent {
+                        node {
+                            label "master"
+                        }
+                    }
                     steps {
                         script {
                             openshift.withCluster() {
@@ -107,6 +107,11 @@ pipeline {
                     }
                 }
                 stage("Build Api") {
+                    agent {
+                        node {
+                            label "master"
+                        }
+                    }
                     steps {
                         script {
                             openshift.withCluster() {

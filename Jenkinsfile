@@ -96,8 +96,8 @@ pipeline {
                         }
                     }
                     steps {
-                        echo '### Running api build ###'
                         script {
+                            echo '### Running api build ###'
                             openshift.withCluster() {
                                 openshift.withProject("${TARGET_NAMESPACE}") {
                                     openshift.selector("bc", "${NAME}-api").startBuild("--wait=true")
@@ -113,8 +113,8 @@ pipeline {
                         }
                     }
                     steps {
-                        echo '### Running app build ###'
                         script {
+                            echo '### Running app build ###'
                             openshift.withCluster() {
                                 openshift.withProject("${TARGET_NAMESPACE}") {
                                     openshift.selector("bc", "${NAME}-build").startBuild("--wait=true")

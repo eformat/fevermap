@@ -32,8 +32,8 @@ class Submission(Base):
     # Convert to Column(Point) when a custom field type that matches the
     # MariaDB geospatial data type is written
     # See https://docs.sqlalchemy.org/en/13/core/types.html
-    location_lng = Column(Float)
-    location_lat = Column(Float)
+    location_lng = Column(Float(precision='11,8'))
+    location_lat = Column(Float(precision='11,8'))
 
     submitter_id = Column(Integer, ForeignKey('submitters.id'))
 

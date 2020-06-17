@@ -88,18 +88,18 @@ pipeline {
         }
 
         stage("Build (Compile App)") {
+            agent {
+                node {
+                    label "master"
+                }
+            }
             parallel {
                 stage("Build App") {
-                    agent {
-                        node {
-                            label "master"
-                        }
-                    }
                     steps {
                         script {
-                            echo '### Running app build ###'
                             openshift.withCluster() {
                                 openshift.withProject("${TARGET_NAMESPACE}") {
+                                    echo '### Running app build ###'
                                     openshift.selector("bc", "${NAME}-build").startBuild("--wait=true")
                                 }
                             }
@@ -107,16 +107,11 @@ pipeline {
                     }
                 }
                 stage("Build Api") {
-                    agent {
-                        node {
-                            label "master"
-                        }
-                    }
                     steps {
                         script {
-                            echo '### Running api build ###'
                             openshift.withCluster() {
                                 openshift.withProject("${TARGET_NAMESPACE}") {
+                                    echo '### Running api build ###'
                                     openshift.selector("bc", "${NAME}-api").startBuild("--wait=true")
                                 }
                             }

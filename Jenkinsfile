@@ -102,7 +102,7 @@ pipeline {
                             if [ $rc -eq 1 ]; then
                                 echo " 🏗 no app build - creating one 🏗"
                             fi
-                            echo " 🏗 build found - starting it  🏗"    
+                            echo " 🏗 build found - starting it  🏗"
                             oc -n ${TARGET_NAMESPACE} start-build ${NAME}-build --follow
                             '''
                         }
@@ -121,7 +121,7 @@ pipeline {
                             if [ $rc -eq 1 ]; then
                                 echo " 🏗 no api build - creating one 🏗"
                             fi
-                            echo " 🏗 build found - starting it  🏗"    
+                            echo " 🏗 build found - starting it  🏗"
                             oc -n ${TARGET_NAMESPACE} start-build ${NAME}-api --follow
                             '''
                         }
@@ -138,15 +138,16 @@ pipeline {
                 }
             }
             steps {
-                echo '### Waiting for runtime app build to complete ###'
+                echo '### Waiting for runtime app builds to complete ###'
                 script {
-                    openshift.withCluster() {
-                        openshift.withProject("${TARGET_NAMESPACE}") {
-                            openshift.selector("bc", "${NAME}-runtime").untilEach(1) {
-                                return it.object().status.phase == "Complete"
-                            }
-                        }
-                    }
+                    sh '''
+                    oc -n ${TARGET_NAMESPACE} get builds -l buildconfig=${NAME}-runtime || rc=$?
+                    if [ $rc -eq 1 ]; then
+                        echo " 🏗 no runtime build - creating one 🏗"
+                    fi
+                    echo " 🏗 build found - waiting for it it  🏗"
+                    oc -n ${TARGET_NAMESPACE} wait builds -l buildconfig=${NAME}-runtime --for=condition=Complete --timeout=300s                     
+                    '''
                 }
             }
         }

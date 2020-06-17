@@ -98,13 +98,12 @@ pipeline {
                     steps {
                         script {
                             sh '''
-                            oc get bc ${NAME}-build || rc=$?
+                            oc -n ${TARGET_NAMESPACE} get bc ${NAME}-build || rc=$?
                             if [ $rc -eq 1 ]; then
                                 echo " 🏗 no app build - creating one 🏗"
-                                // create a build
                             fi
                             echo " 🏗 build found - starting it  🏗"    
-                            oc start-build ${NAME}-build --follow
+                            oc -n ${TARGET_NAMESPACE} start-build ${NAME}-build --follow
                             '''
                         }
                     }
@@ -118,13 +117,12 @@ pipeline {
                     steps {
                         script {
                             sh '''
-                            oc get bc ${NAME}-build || rc=$?
+                            oc -n ${TARGET_NAMESPACE} get bc ${NAME}-build || rc=$?
                             if [ $rc -eq 1 ]; then
                                 echo " 🏗 no api build - creating one 🏗"
-                                // create a build
                             fi
                             echo " 🏗 build found - starting it  🏗"    
-                            oc start-build ${NAME}-api --follow
+                            oc -n ${TARGET_NAMESPACE} start-build ${NAME}-api --follow
                             '''
                         }
                     }

@@ -72,7 +72,7 @@ class FevermapDataEntry extends LitElement {
 
         this.crowdingLevel = "Not Crowded";
 
-        this.firstTimeSubmitting = this.gender == null|| this.birthYear == null;
+        this.firstTimeSubmitting = this.gender == null || this.birthYear == null;
 
         this.createCountrySelectOptions();
         this.queuedEntries = [];
@@ -437,7 +437,7 @@ class FevermapDataEntry extends LitElement {
             SnackBar.success(Translator.get('system_messages.success.data_entry'));
 
             GoogleAnalyticsService.reportSubmission();
-            PWAService.launchInstallDialog();
+            //PWAService.launchInstallDialog();
             this.closeView();
             syncClientInformation();
             if (NotificationService.isMessagingSupported()) {

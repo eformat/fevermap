@@ -89,23 +89,23 @@ pipeline {
 
         stage("Build (Compile App)") {
             parallel {
-                stage("Build Api") {
-                    agent {
-                        node {
-                            label "master"
-                        }
-                    }
-                    steps {
-                        script {
-                            echo '### Running api build ###'
-                            openshift.withCluster() {
-                                openshift.withProject("${TARGET_NAMESPACE}") {
-                                    openshift.selector("bc", "${NAME}-api").startBuild("--wait=true")
-                                }
-                            }
-                        }
-                    }
-                }
+                // stage("Build Api") {
+                //     agent {
+                //         node {
+                //             label "master"
+                //         }
+                //     }
+                //     steps {
+                //         script {
+                //             echo '### Running api build ###'
+                //             openshift.withCluster() {
+                //                 openshift.withProject("${TARGET_NAMESPACE}") {
+                //                     openshift.selector("bc", "${NAME}-api").startBuild("--wait=true")
+                //                 }
+                //             }
+                //         }
+                //     }
+                // }
                 stage("Build App") {
                     agent {
                         node {

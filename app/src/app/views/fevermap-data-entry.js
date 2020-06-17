@@ -312,8 +312,8 @@ class FevermapDataEntry extends LitElement {
 
         feverData.location_country_code = geoCodingInfo.country_code;
         feverData.location_postal_code = geoCodingInfo.postal_code;
-        feverData.location_lng = Number.parseFloat(geoCodingInfo.location_lng).toFixed(9);
-        feverData.location_lat = Number.parseFloat(geoCodingInfo.location_lat).toFixed(9);
+        feverData.location_lng = geoCodingInfo.location_lng.toFixed(11);
+        feverData.location_lat = geoCodingInfo.location_lat.toFixed(11);
 
         const possibleSymptoms = [
             'symptom_difficult_to_breath',

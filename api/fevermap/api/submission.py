@@ -130,8 +130,8 @@ class SubmissionResource(Resource):
         #    errors += ('location_lng', 'Incorrect form or length')
 
         # Allowed values from -90 to 90 with 2 decimals
-        if not re.fullmatch(r'(-)?[0-9]{1,2}\.[0-9]{2,}', data['location_lat']):
-            errors += ('location_lat', 'Incorrect form or length')
+        #if not re.fullmatch(r'(-)?[0-9]{1,2}\.[0-9]{2,}', data['location_lat']):
+        #    errors += ('location_lat', 'Incorrect form or length')
 
         # Abort if validation failed
         if errors:

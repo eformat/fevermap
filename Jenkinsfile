@@ -103,7 +103,7 @@ pipeline {
                                     openshift.selector("bc", "${NAME}-api").startBuild("--wait=true")
                                 }
                             }
-                    }
+                        }
                     }
                 }
                 stage("Build App") {
@@ -120,7 +120,7 @@ pipeline {
                                     openshift.selector("bc", "${NAME}-build").startBuild("--wait=true")
                                 }
                             }
-                    }
+                        }
                     }
                 }
             }

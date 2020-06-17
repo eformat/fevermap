@@ -486,6 +486,7 @@ class FevermapDataView extends LitElement {
           })}. <br />
           ${this.getSeekForHelpText()}
         </p>
+        <!--
         <material-icon
           tabindex="0"
           icon="edit"
@@ -493,6 +494,7 @@ class FevermapDataView extends LitElement {
             this.showEditFields = !this.showEditFields;
           }}"
         ></material-icon>
+        -->
       </div>
       <div
         class="persistent-info-editing-fields ${this.showEditFields

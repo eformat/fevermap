@@ -97,12 +97,15 @@ pipeline {
                     }
                     steps {
                         script {
-                            openshift.withCluster() {
-                                openshift.withProject("${TARGET_NAMESPACE}") {
-                                    echo '### Running app build ###'
-                                    openshift.selector("bc", "${NAME}-build").startBuild("--wait=true")
-                                }
-                            }
+                            sh '''
+                            oc get bc ${NAME}-build || rc=$?
+                            if [ $rc -eq 1 ]; then
+                                echo " 🏗 no app build - creating one 🏗"
+                                // create a build
+                            fi
+                            echo " 🏗 build found - starting it  🏗"    
+                            oc start-build ${NAME}-build --follow
+                            '''
                         }
                     }
                 }
@@ -114,12 +117,15 @@ pipeline {
                     }
                     steps {
                         script {
-                            openshift.withCluster() {
-                                openshift.withProject("${TARGET_NAMESPACE}") {
-                                    echo '### Running api build ###'
-                                    openshift.selector("bc", "${NAME}-api").startBuild("--wait=true")
-                                }
-                            }
+                            sh '''
+                            oc get bc ${NAME}-build || rc=$?
+                            if [ $rc -eq 1 ]; then
+                                echo " 🏗 no api build - creating one 🏗"
+                                // create a build
+                            fi
+                            echo " 🏗 build found - starting it  🏗"    
+                            oc start-build ${NAME}-api --follow
+                            '''
                         }
                     }
                 }

@@ -150,8 +150,8 @@ class SubmissionResource(Resource):
         location_country_code = str(data['location_country_code'])
         location_postal_code = str(data['location_postal_code'])
         # Precision changed !
-        location_lng = round(float(data['location_lng']), 11)
-        location_lat = round(float(data['location_lat']), 11)
+        location_lng = float(data['location_lng'])
+        location_lat = float(data['location_lat'])
 
         # Time 1584649859812 when this was written
         if not 1584000000000 < device_id:

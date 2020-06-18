@@ -342,7 +342,7 @@ class FevermapDataView extends LitElement {
                   </div>
                 `
               : ''}
-            ${this.createPersistentDataFields()}
+
             <div class="previous-submissions-list">
               ${this.previousSubmissions &&
               this.previousSubmissions.map((sub, i) => {

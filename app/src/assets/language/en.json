@@ -126,6 +126,7 @@
         "notifications": {
             "title": "Allow notifications",
             "content": "SafeCommute would like to offer you a daily notification showing crowding on your favourite Route. Allow notifications?",
+            "approve_text": "Allow notifications",
             "decline_text": "No please"
         }
     },
